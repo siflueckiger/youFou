@@ -5,7 +5,7 @@ class Asteroid {
   float yspeed = random(0.5, 1.5);
 
   color asteroidColor = color(0, 255, 0);
-  float aSize = random(5, 40);
+  float aSize = random(5, 15);
   
   void fall() {
     y = y + yspeed;
@@ -20,6 +20,7 @@ class Asteroid {
 
   void show() {
     stroke(asteroidColor);
+    //noFill();
     //strokeWeight(1);
     fill(asteroidColor, 70);
     rect(x, y, aSize, aSize);

@@ -7,6 +7,7 @@ class Treasure {
 
   void show() {
     stroke(tresColor);
+    //noFill();
     fill(tresColor, 90);
     ellipse(x, y, size, size);
   }

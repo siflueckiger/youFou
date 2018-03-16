@@ -3,6 +3,7 @@ class UFO {
   color ufoColor = color(0, 0, 255);
 
   void show() {
+    //noFill();
     fill(ufoColor, 60);
     stroke(ufoColor);
     ellipse(mouseX, mouseY, ufoSize, ufoSize);
