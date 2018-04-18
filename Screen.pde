@@ -6,7 +6,6 @@
 class Screen {
 
   Screen() {
-    gameScreen = 0;
     textAlign(CENTER);
   }
 
@@ -17,7 +16,8 @@ class Screen {
     textSize(30);
     text("SPIELANLEITUNG", width / 2, height / 3);
     textSize(20);
-    text("Flieg mit dem Raumschiff nicht in die Asteroide!", width / 2, height / 2 -60);
+    text("Flieg mit dem Raumschiff nicht in die Asteroide und sammle die Schätze ein!", width / 2, height / 2 -60);
+    text("pull the trigger to begin..", width / 2, height / 2 -30);
   }
 
   void play() {
@@ -40,7 +40,7 @@ class Screen {
     text("score: " + score, width / 2, 20);
   }
 
-  void gameOver() {      
+  void gameOver() {
     textSize(60);
     fill(255, 0, 0);
     text("- GAME OVER -", width / 2, height / 3);
@@ -51,10 +51,14 @@ class Screen {
       highscore = score;
       text("NEUER HIGHSCORE! ", width / 2, height / 3 + 150);
       text("deine punktzahl: " + score, width / 2, height / 3 + 200);
-    } else if (score < highscore){
-      text("naja.. schön hast dus probiert... " + score, width / 2, height / 3 + 150);
+      fill(255);
+      text("pull the trigger to play again..", width / 2, height / 3 + 300);
+    } else if (score < highscore) {
+      text("naja.. schön hast dus probiert... ", width / 2, height / 3 + 150);
       text("deine punktzahl: " + score, width / 2, height / 3 + 200);
       text("highscore: " + highscore, width / 2, height / 3 + 250);
+      fill(255);
+      text("pull the trigger to play again..", width / 2, height / 3 + 350);
     }
   }
 
@@ -66,8 +70,10 @@ class Screen {
     }
 
     background(0);
-    gameScreen = 0;
-    
+
     score = 0;
+    println(gameScreen);
+    gameScreen = 0;
+    println(gameScreen);
   }
 }

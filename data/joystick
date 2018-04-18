@@ -1,0 +1,5 @@
+YouFou controller
+X	X position	3	SLIDER	x	0	1.0	0.0
+Y	Y position	3	SLIDER	y	0	1.0	0.0
+SHOOT	shoot asteroids	1	BUTTON	0	0	0.0	0.0
+CLEAR	clear area from asteroids	1	BUTTON	1	0	0.0	0.0

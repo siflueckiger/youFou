@@ -27,7 +27,7 @@ class Asteroid {
   }
 
   void hit() {
-    if (sqrt(pow(mouseX - x, 2) + pow(mouseY - y, 2)) < aSize/2 + ufoSize/2) {      
+    if (sqrt(pow(u.x - x, 2) + pow(u.y - y, 2)) < aSize/2 + ufoSize/2) {      
       gameScreen = 2;
     }
   }

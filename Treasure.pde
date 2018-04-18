@@ -13,7 +13,7 @@ class Treasure {
   }
 
   void pick() {
-    if (sqrt(pow(mouseX - x, 2) + pow(mouseY - y, 2)) < size/2 + ufoSize/2 - 12) {      
+    if (sqrt(pow(u.x - x, 2) + pow(u.y - y, 2)) < size/2 + ufoSize/2 - 12) {      
       score = score + 1;
       t = new Treasure();
     }
