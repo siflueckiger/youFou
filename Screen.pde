@@ -30,6 +30,16 @@ class Screen {
       asteroids[i].fall();
       asteroids[i].show();
       asteroids[i].hit();
+      asteroids[i].shot();
+    }
+
+    for (int i = shots.size() - 1; i >= 0; i--) {
+      Shot shot = shots.get(i);
+      shot.move();
+      shot.display();
+      if (shot.finished()) {
+        shots.remove(i);
+      }
     }
 
     u.show();
@@ -38,6 +48,7 @@ class Screen {
     textSize(16);
     fill(255, 0, 0);
     text("score: " + score, width / 2, 20);
+    text("shots: " + shotCounter, width / 2, 40);
   }
 
   void gameOver() {
@@ -72,8 +83,7 @@ class Screen {
     background(0);
 
     score = 0;
-    println(gameScreen);
     gameScreen = 0;
-    println(gameScreen);
+    shotCounter = beginShots;
   }
 }

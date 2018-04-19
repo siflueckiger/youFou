@@ -4,22 +4,21 @@ import org.gamecontrolplus.gui.*;
 
 ControlIO control;
 ControlDevice stick;
-
+int ishot;
 float iX, iY;
-boolean shoot, clearArea;
-
+boolean _shoot;
 color backgroundColor = color(0, 0, 0);
 int ufoSize = 40;
 int gameScreen;
 int score, highscore;
+int shotCounter, beginShots = 5;
+int shotFired;
 
-
+ArrayList<Shot> shots;
 Asteroid[] asteroids = new Asteroid[100];
 UFO u;
 Screen s;
 Treasure t;
-
-
 
 
 void setup() {
@@ -37,7 +36,7 @@ void setup() {
     println("no suitable device configured");
     System.exit(-1);
   }
-  
+
   //initialize objects
   init();
 }
@@ -71,46 +70,42 @@ void init() {
     asteroids[i] = new Asteroid();
   }
 
+  shots = new ArrayList<Shot>();
+  //shots.add(new Shot(width/2, height/2));
+
   s = new Screen();
   u = new UFO();
   t = new Treasure();
+
+  shotCounter = beginShots;
 }
 
 public void getUserInput() {
   iX = map(stick.getSlider("X").getValue(), -1, 1, -8, 8);
   iY = map(stick.getSlider("Y").getValue(), -1, 1, -8, 8);
-  shoot = stick.getButton("SHOOT").pressed();
-  clearArea = stick.getButton("CLEAR").pressed();
-  //println("Joystickinput: ", iX, iY, shoot, clearArea);
-
-  if (shoot == true) {
-
-    if (gameScreen == 0) {
-      gameScreen = 1;
-    } else if (gameScreen == 2) {
-      gameScreen = 3;
-    }
-  }
-
+  _shoot = stick.getButton("SHOOT").pressed();
+  //println("Joystickinput: ", iX, iY, _shoot);
 
   switch(gameScreen) {
   case 0: //init screen
-    if (shoot == true) {
+    if (_shoot == true) {
       gameScreen = 1;
     }
     break;
 
   case 1: //game screen
-    if (shoot == true) {
+    if (_shoot == true) {
+      if (shotFired == 0 && shotCounter > 0) {
+        shotFired = 1;
+        shots.add(new Shot(u.x, u.y));
+      }
       //u.shoot();
     }
-    if (clearArea == true) {
-      //u.clear;
-    }
+
     break;
 
   case 2: //game over screen
-    if (shoot == true) {
+    if (_shoot == true) {
       gameScreen = 3;
     }
     break;

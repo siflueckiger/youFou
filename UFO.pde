@@ -13,6 +13,7 @@ class UFO {
     //noFill();
     fill(ufoColor, 60);
     stroke(ufoColor);
+    strokeWeight(1);
     ellipse(x, y, ufoSize, ufoSize);
     fill(ufoColor, 90);
     ellipse(x, y, ufoSize - 25, ufoSize - 25);

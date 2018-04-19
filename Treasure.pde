@@ -7,6 +7,7 @@ class Treasure {
 
   void show() {
     stroke(tresColor);
+    strokeWeight(1);
     //noFill();
     fill(tresColor, 90);
     ellipse(x, y, size, size);
@@ -16,6 +17,8 @@ class Treasure {
     if (sqrt(pow(u.x - x, 2) + pow(u.y - y, 2)) < size/2 + ufoSize/2 - 12) {      
       score = score + 1;
       t = new Treasure();
+      
+      shotCounter++;
     }
   }
  
