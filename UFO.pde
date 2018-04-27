@@ -11,11 +11,11 @@ class UFO {
   
   void show() {
     //noFill();
-    fill(ufoColor, 60);
+    fill(ufoColor, 80);
     stroke(ufoColor);
-    strokeWeight(1);
+    strokeWeight(2);
     ellipse(x, y, ufoSize, ufoSize);
-    fill(ufoColor, 90);
+    fill(ufoColor);
     ellipse(x, y, ufoSize - 25, ufoSize - 25);
   }
 }

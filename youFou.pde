@@ -1,3 +1,5 @@
+//todo
+
 import net.java.games.input.*;
 import org.gamecontrolplus.*;
 import org.gamecontrolplus.gui.*;
@@ -6,13 +8,14 @@ ControlIO control;
 ControlDevice stick;
 int ishot;
 float iX, iY;
-boolean _shoot;
+boolean _shoot, _select;
 color backgroundColor = color(0, 0, 0);
 int ufoSize = 40;
 int gameScreen;
 int score, highscore;
 int shotCounter, beginShots = 5;
 int shotFired;
+PImage bg;
 
 ArrayList<Shot> shots;
 Asteroid[] asteroids = new Asteroid[100];
@@ -22,9 +25,12 @@ Treasure t;
 
 
 void setup() {
-  //fullScreen();
-  size(800, 800);
-  background(backgroundColor);
+  fullScreen();
+  //size(800, 800, P3D);
+  background(0);
+  bg = loadImage("alien.jpg");
+  bg.resize(width, height);
+  background(bg);
   noCursor();
   rectMode(CENTER);
 
@@ -84,11 +90,12 @@ public void getUserInput() {
   iX = map(stick.getSlider("X").getValue(), -1, 1, -8, 8);
   iY = map(stick.getSlider("Y").getValue(), -1, 1, -8, 8);
   _shoot = stick.getButton("SHOOT").pressed();
+  _select = stick.getButton("SELECT").pressed();
   //println("Joystickinput: ", iX, iY, _shoot);
 
   switch(gameScreen) {
   case 0: //init screen
-    if (_shoot == true) {
+    if (_select == true) {
       gameScreen = 1;
     }
     break;
@@ -105,7 +112,7 @@ public void getUserInput() {
     break;
 
   case 2: //game over screen
-    if (_shoot == true) {
+    if (_select == true) {
       gameScreen = 3;
     }
     break;

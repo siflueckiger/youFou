@@ -10,7 +10,7 @@ class Screen {
   }
 
   void init() {
-    background(0);
+    background(bg);
     fill(255);
 
     textSize(30);
@@ -21,7 +21,7 @@ class Screen {
   }
 
   void play() {
-    background(backgroundColor);
+    background(bg);
 
 
     t.show();
@@ -64,7 +64,7 @@ class Screen {
       text("deine punktzahl: " + score, width / 2, height / 3 + 200);
       fill(255);
       text("pull the trigger to play again..", width / 2, height / 3 + 300);
-    } else if (score < highscore) {
+    } else if (score < highscore || score == 0) {
       text("naja.. schön hast dus probiert... ", width / 2, height / 3 + 150);
       text("deine punktzahl: " + score, width / 2, height / 3 + 200);
       text("highscore: " + highscore, width / 2, height / 3 + 250);
