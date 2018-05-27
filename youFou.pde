@@ -3,30 +3,59 @@
 import net.java.games.input.*;
 import org.gamecontrolplus.*;
 import org.gamecontrolplus.gui.*;
+import oscP5.*;
+import netP5.*;
 
+/****** CONTROLLER ******/
 ControlIO control;
 ControlDevice stick;
-int ishot;
-float iX, iY;
-boolean _shoot, _select;
-color backgroundColor = color(0, 0, 0);
-int ufoSize = 40;
-int gameScreen;
-int score, highscore;
-int shotCounter, beginShots = 5;
-int shotFired;
-PImage bg;
 
-ArrayList<Shot> shots;
-Asteroid[] asteroids = new Asteroid[100];
+
+/****** OSC ******/
+OscP5 osc;
+NetAddress oscIN;
+NetAddress[] oscOUT = new NetAddress[3]; //make oscOUT objects for all IPs
+
+
+/****** OBJECTS ******/
 UFO u;
 Screen s;
 Treasure t;
 
 
-void setup() {
+/****** VARIABLES ******/
+color backgroundColor = color(0, 0, 0);
+PImage bg;
+
+int ufoSize = 40;
+int gameScreen;
+int score, highscore;
+Asteroid[] asteroids = new Asteroid[100];
+
+//shot
+int ishot;
+float iX, iY;
+boolean _shoot, _select;
+int shotCounter, beginShots = 5;
+int shotFired;
+ArrayList<Shot> shots;
+
+
+/****** OSC ******/
+String[] IPsOut = {"192.168.0.13", "192.168.0.19", "192.168.0.18"}; //ip where message is send to
+int portsOut[] = {10500, 10500, 10500}; //port on which message will be send
+int portIn = 5007; //port on which it will listen for messages
+
+
+/****** SETTINGS ******/
+void settings() {
   fullScreen();
   //size(800, 800, P3D);
+}
+
+
+/****** SETUP ******/
+void setup() {
   background(0);
   bg = loadImage("alien.jpg");
   bg.resize(width, height);
@@ -43,12 +72,23 @@ void setup() {
     System.exit(-1);
   }
 
+  //start oscP5, listening for incoming messages at portIn
+  osc = new OscP5(this, portIn);
+
+  //create oscOUT objects for all IPs
+  for (int i=0; i < IPsOut.length; i++) {
+    oscOUT[i] = new NetAddress(IPsOut[i], portsOut[i]);
+  }
+
   //initialize objects
   init();
 }
 
 void draw() {
   getUserInput();
+
+  OSC_sender();
+
 
   //println(gameScreen);
 
@@ -70,6 +110,23 @@ void draw() {
   }
 }
 
+
+/****** OSC Sender *****/
+void OSC_sender() {
+  //create message
+  OscMessage messageTransmit = new OscMessage("/CrappyBird");
+  messageTransmit.add(u.x);
+  messageTransmit.add(u.y);
+
+  //send to all IPs
+  for (int i=0; i < IPsOut.length; i++) {
+    osc.send(messageTransmit, oscOUT[i]);
+    //println(IPsOut[i], portsOut[i]);
+  }
+  //println(messageTransmit);
+}
+
+/****** INIT *****/
 void init() {
   //initialize objects
   for (int i = 0; i < asteroids.length; i++) {
@@ -86,6 +143,8 @@ void init() {
   shotCounter = beginShots;
 }
 
+
+/****** CONTROLLER *****/
 public void getUserInput() {
   iX = map(stick.getSlider("X").getValue(), -1, 1, -8, 8);
   iY = map(stick.getSlider("Y").getValue(), -1, 1, -8, 8);
