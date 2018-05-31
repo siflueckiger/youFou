@@ -42,7 +42,7 @@ ArrayList<Shot> shots;
 
 
 /****** OSC ******/
-String[] IPsOut = {"192.168.0.13", "192.168.0.19", "192.168.0.18"}; //ip where message is send to
+String[] IPsOut = {"192.168.0.24", "192.168.0.19", "192.168.0.18"}; //ip where message is send to
 int portsOut[] = {10500, 10500, 10500}; //port on which message will be send
 int portIn = 5007; //port on which it will listen for messages
 
@@ -114,9 +114,9 @@ void draw() {
 /****** OSC Sender *****/
 void OSC_sender() {
   //create message
-  OscMessage messageTransmit = new OscMessage("/CrappyBird");
-  messageTransmit.add(u.x);
-  messageTransmit.add(u.y);
+  OscMessage messageTransmit = new OscMessage("/YouFou");
+  messageTransmit.add(u.x/width);
+  messageTransmit.add(u.y/height);
 
   //send to all IPs
   for (int i=0; i < IPsOut.length; i++) {
