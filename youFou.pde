@@ -177,8 +177,6 @@ public void getUserInput() {
     break;
   }
 
-
-
   u.x += iX;
   u.y += iY;
 }
