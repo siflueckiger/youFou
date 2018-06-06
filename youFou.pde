@@ -14,7 +14,7 @@ ControlDevice stick;
 /****** OSC ******/
 OscP5 osc;
 NetAddress oscIN;
-NetAddress[] oscOUT = new NetAddress[3]; //make oscOUT objects for all IPs
+NetAddress[] oscOUT = new NetAddress[4]; //make oscOUT objects for all IPs
 
 
 /****** OBJECTS ******/
