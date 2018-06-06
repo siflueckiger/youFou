@@ -42,8 +42,16 @@ ArrayList<Shot> shots;
 
 
 /****** OSC ******/
-String[] IPsOut = {"192.168.0.24", "192.168.0.19", "192.168.0.18"}; //ip where message is send to
-int portsOut[] = {10500, 10500, 10500}; //port on which message will be send
+String[] IPsOut = { "192.168.1.121",  //visuals 1
+                    "192.168.1.121",  //visuals 2
+                    "192.168.1.121",  //visuals counter
+                    "192.168.1.120"}; //sound
+                    
+int portsOut[] = {20101,
+                  20102,
+                  20200,
+                  20301}; //port on which message will be send
+                  
 int portIn = 5007; //port on which it will listen for messages
 
 
