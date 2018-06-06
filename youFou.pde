@@ -42,16 +42,16 @@ ArrayList<Shot> shots;
 
 
 /****** OSC ******/
-String[] IPsOut = { "192.168.1.121",  //visuals 1
-                    "192.168.1.121",  //visuals 2
-                    "192.168.1.121",  //visuals counter
-                    "192.168.1.120"}; //sound
-                    
-int portsOut[] = {20101,
-                  20102,
-                  20200,
-                  20301}; //port on which message will be send
-                  
+String[] IPsOut = { "192.168.1.121", //visuals 1
+  "192.168.1.121", //visuals 2
+  "192.168.1.121", //visuals counter
+  "192.168.1.120"}; //sound
+
+int portsOut[] = {20101, 
+  20102, 
+  20200, 
+  20301}; //port on which message will be send
+
 int portIn = 5007; //port on which it will listen for messages
 
 
@@ -125,6 +125,8 @@ void OSC_sender() {
   OscMessage messageTransmit = new OscMessage("/YouFou");
   messageTransmit.add(u.x/width);
   messageTransmit.add(u.y/height);
+  messageTransmit.add(gameScreen);
+
 
   //send to all IPs
   for (int i=0; i < IPsOut.length; i++) {
@@ -164,6 +166,7 @@ public void getUserInput() {
   case 0: //init screen
     if (_select == true) {
       gameScreen = 1;
+      init();
     }
     break;
 
