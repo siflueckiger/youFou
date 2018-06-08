@@ -3,7 +3,7 @@ class Treasure {
   float x = random(40, width - 40);
   float y = random(40, height - 40);
   float size = random(20, 40);
-  color tresColor = color(255,20,147);
+  color tresColor = color(255);
 
   void show() {
     stroke(tresColor);

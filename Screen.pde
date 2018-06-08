@@ -16,10 +16,11 @@ class Screen {
 
     textSize(60);
     text("SPIELANLEITUNG", width / 2, height / 3);
-    textSize(40);
-    text("Flieg mit dem runden Raumschiff nicht in die viereckigen Asteroide.", width / 2, height / 2 - 60);
-    text("Sammle die dreieckigen Schätz ein.", width / 2, height / 2);
-    textSize(60);
+    textSize(35);
+    text("Flieg mit dem runden Raumschiff nicht", width / 2, height / 2 - 40);
+    text("in die viereckigen Asteroide.", width / 2, height / 2 - 5);
+    text("Sammle die dreieckigen Schätze ein.", width / 2, height / 2 + 60);
+    textSize(35);
     text("Drücke die Daumentaste um zu beginnen.", width / 2, height / 2 + 200);
   }
 
@@ -59,6 +60,7 @@ class Screen {
     textSize(60);
     fill(255);
     text("- GAME OVER -", width / 2, height / 3);
+    textSize(35);
     text("Drücke die Daumentaste um zu beginnen.", width / 2, height / 3 + 350);
 
 
@@ -72,28 +74,33 @@ class Screen {
       text("Highscore: " + highscore, width / 2, height / 3 + 250);
     }
   }
-  
+
   void verfahren() {
     textSize(60);
     fill(255);
     text("- GAME OVER -", width / 2, height / 3);
     text("Du hast dich verfahren.", width / 2, height / 3 + 150);
+    textSize(35);
     text("Drücke die Daumentaste um zu beginnen.", width / 2, height / 3 + 350);
   }
 
   void reset() {
-    highscore = score;
+    if(score > highscore){
+      highscore = score;
+    }
 
     s = new Screen();
     u = new UFO();
     for (int i = 0; i < asteroids.length; i++) {
       asteroids[i] = new Asteroid();
     }
+    shots = new ArrayList<Shot>();
 
     background(0);
 
     score = 0;
     gameScreen = 0;
     shotCounter = beginShots;
+    shotFired = 0;
   }
 }

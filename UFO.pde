@@ -4,7 +4,7 @@ class UFO {
   float x, y;
 
   UFO () {
-    ufoColor = color(0, 0, 255);
+    ufoColor = color(0, 255, 255);
     x = width/2;
     y = width/2;
   }
@@ -16,7 +16,7 @@ class UFO {
     strokeWeight(2);
     ellipse(x, y, ufoSize, ufoSize);
     fill(0);
-    ellipse(x, y, ufoSize - 25, ufoSize - 25);
+    ellipse(x, y, ufoSize - 20, ufoSize - 15);
   }
 
   void outOfArea() {

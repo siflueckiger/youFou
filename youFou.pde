@@ -26,7 +26,9 @@ Treasure t;
 /****** VARIABLES ******/
 color backgroundColor = color(0, 0, 0);
 
-int ufoSize = 45;
+int shoti;
+
+int ufoSize = 30;
 int gameScreen;
 int score, highscore;
 Asteroid[] asteroids = new Asteroid[100];
@@ -124,6 +126,7 @@ void OSC_sender() {
   messageTransmit.add(u.y/height);
   messageTransmit.add(shotFired);
   messageTransmit.add(gameScreen);
+  messageTransmit.add(score);
 
 
   //send to all IPs
@@ -170,7 +173,11 @@ public void getUserInput() {
 
   case 1: //game screen
     if (_shoot == true) {
+      println(shotFired, shotCounter);
+
       if (shotFired == 0 && shotCounter > 0) {
+        
+
         shotFired = 1;
         shots.add(new Shot(u.x, u.y));
       }
@@ -185,7 +192,7 @@ public void getUserInput() {
       delay(500);
     }
     break;
-    
+
   case 4: //verfahren screen
     if (_select == true) {
       gameScreen = 3;
