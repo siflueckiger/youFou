@@ -20,8 +20,8 @@ class UFO {
   }
 
   void outOfArea() {
-    if (x < -50 ||  x > width+50 || y < -50 || y > height + 50) {
-      println("outOfScreen");
+    if (x < -500 ||  x > width+500 || y < -500 || y > height + 500) {
+      gameScreen = 4;
     }
   }
 }

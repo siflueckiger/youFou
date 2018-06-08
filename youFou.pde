@@ -108,6 +108,10 @@ void draw() {
     //println("reset");
     //reset game
     s.reset();
+  } else if (gameScreen == 4) {
+    //println("reset");
+    //reset game
+    s.verfahren();
   }
 }
 
@@ -176,6 +180,13 @@ public void getUserInput() {
     break;
 
   case 2: //game over screen
+    if (_select == true) {
+      gameScreen = 3;
+      delay(500);
+    }
+    break;
+    
+  case 4: //verfahren screen
     if (_select == true) {
       gameScreen = 3;
       delay(500);

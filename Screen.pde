@@ -72,6 +72,14 @@ class Screen {
       text("Highscore: " + highscore, width / 2, height / 3 + 250);
     }
   }
+  
+  void verfahren() {
+    textSize(60);
+    fill(255);
+    text("- GAME OVER -", width / 2, height / 3);
+    text("Du hast dich verfahren.", width / 2, height / 3 + 150);
+    text("Drücke die Daumentaste um zu beginnen.", width / 2, height / 3 + 350);
+  }
 
   void reset() {
     highscore = score;
