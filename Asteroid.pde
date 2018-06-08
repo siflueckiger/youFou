@@ -23,7 +23,7 @@ class Asteroid {
     strokeWeight(1);
     //noFill();
     //strokeWeight(1);
-    fill(asteroidColor, 97);
+    fill(asteroidColor);
     rect(x, y, aSize, aSize);
   }
 

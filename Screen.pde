@@ -10,19 +10,22 @@ class Screen {
   }
 
   void init() {
-    background(bg);
+    //background(bg);
+    background(0);
     fill(255);
 
-    textSize(30);
+    textSize(60);
     text("SPIELANLEITUNG", width / 2, height / 3);
-    textSize(20);
-    text("Flieg mit dem Raumschiff nicht in die Asteroide und sammle die Schätze ein!", width / 2, height / 2 -60);
-    text("pull the trigger to begin..", width / 2, height / 2 -30);
+    textSize(40);
+    text("Flieg mit dem runden Raumschiff nicht in die viereckigen Asteroide.", width / 2, height / 2 - 60);
+    text("Sammle die dreieckigen Schätz ein.", width / 2, height / 2);
+    textSize(60);
+    text("Drücke die Daumentaste um zu beginnen.", width / 2, height / 2 + 200);
   }
 
   void play() {
-    background(bg);
-
+    //background(bg);
+    background(0);
 
     t.show();
 
@@ -43,37 +46,36 @@ class Screen {
     }
 
     u.show();
+    u.outOfArea();
     t.pick();
 
-    textSize(16);
-    fill(255, 0, 0);
-    text("score: " + score, width / 2, 20);
-    text("shots: " + shotCounter, width / 2, 40);
+    textSize(30);
+    fill(255);
+    text("score: " + score, width / 2, 40);
+    text("shots: " + shotCounter, width / 2, 80);
   }
 
   void gameOver() {
     textSize(60);
-    fill(255, 0, 0);
+    fill(255);
     text("- GAME OVER -", width / 2, height / 3);
+    text("Drücke die Daumentaste um zu beginnen.", width / 2, height / 3 + 350);
 
 
     textSize(40);
     if (score > highscore) {
-      highscore = score;
       text("NEUER HIGHSCORE! ", width / 2, height / 3 + 150);
-      text("deine punktzahl: " + score, width / 2, height / 3 + 200);
-      fill(255);
-      text("pull the trigger to play again..", width / 2, height / 3 + 300);
-    } else if (score < highscore || score == 0) {
-      text("naja.. schön hast dus probiert... ", width / 2, height / 3 + 150);
-      text("deine punktzahl: " + score, width / 2, height / 3 + 200);
-      text("highscore: " + highscore, width / 2, height / 3 + 250);
-      fill(255);
-      text("pull the trigger to play again..", width / 2, height / 3 + 350);
+      text("Deine Punktzahl: " + score, width / 2, height / 3 + 200);
+    } else if (score <= highscore) {
+      text("Naja.. Schön hast du es probiert... ", width / 2, height / 3 + 150);
+      text("Deine Punktzahl: " + score, width / 2, height / 3 + 200);
+      text("Highscore: " + highscore, width / 2, height / 3 + 250);
     }
   }
 
   void reset() {
+    highscore = score;
+
     s = new Screen();
     u = new UFO();
     for (int i = 0; i < asteroids.length; i++) {

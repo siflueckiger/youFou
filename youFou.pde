@@ -25,9 +25,8 @@ Treasure t;
 
 /****** VARIABLES ******/
 color backgroundColor = color(0, 0, 0);
-PImage bg;
 
-int ufoSize = 40;
+int ufoSize = 45;
 int gameScreen;
 int score, highscore;
 Asteroid[] asteroids = new Asteroid[100];
@@ -57,7 +56,7 @@ int portIn = 5007; //port on which it will listen for messages
 
 /****** SETTINGS ******/
 void settings() {
-  fullScreen();
+  fullScreen(1);
   //size(800, 800, P3D);
 }
 
@@ -65,9 +64,6 @@ void settings() {
 /****** SETUP ******/
 void setup() {
   background(0);
-  bg = loadImage("alien.jpg");
-  bg.resize(width, height);
-  background(bg);
   noCursor();
   rectMode(CENTER);
 
@@ -97,9 +93,6 @@ void draw() {
 
   OSC_sender();
 
-
-  //println(gameScreen);
-
   if (gameScreen == 0) {
     //println("init");
     s.init();
@@ -125,6 +118,7 @@ void OSC_sender() {
   OscMessage messageTransmit = new OscMessage("/YouFou");
   messageTransmit.add(u.x/width);
   messageTransmit.add(u.y/height);
+  messageTransmit.add(shotFired);
   messageTransmit.add(gameScreen);
 
 
@@ -184,6 +178,7 @@ public void getUserInput() {
   case 2: //game over screen
     if (_select == true) {
       gameScreen = 3;
+      delay(500);
     }
     break;
   }
