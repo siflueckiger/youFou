@@ -1,14 +1,13 @@
 //todo
 
 import net.java.games.input.*;
-import org.gamecontrolplus.*;
-import org.gamecontrolplus.gui.*;
+//import org.gamecontrolplus.*;
+//import org.gamecontrolplus.gui.*;
 import oscP5.*;
 import netP5.*;
 
 /****** CONTROLLER ******/
-ControlIO control;
-ControlDevice stick;
+import processing.io.*;
 
 
 /****** OSC ******/
@@ -41,6 +40,7 @@ int shotCounter, beginShots = 5;
 int shotFired;
 ArrayList<Shot> shots;
 
+float speed;
 
 /****** OSC ******/
 String[] IPsOut = { "192.168.1.121", //visuals 1
@@ -58,8 +58,8 @@ int portIn = 5007; //port on which it will listen for messages
 
 /****** SETTINGS ******/
 void settings() {
-  fullScreen(1);
-  //size(800, 800, P3D);
+  //fullScreen(1);
+  size(800, 800);
 }
 
 
@@ -69,14 +69,15 @@ void setup() {
   noCursor();
   rectMode(CENTER);
 
-  //initialize the ControlIO
-  control = ControlIO.getInstance(this);
-  //fina a device that maches the configuration file
-  stick = control.getMatchedDevice("joystick");
-  if (stick == null) {
-    println("no suitable device configured");
-    System.exit(-1);
-  }
+  speed = 6;
+
+  GPIO.pinMode(23, GPIO.INPUT); // pin 7 shoot
+
+  GPIO.pinMode(17, GPIO.INPUT); // pin 11
+  GPIO.pinMode(18, GPIO.INPUT); // pin 12
+  GPIO.pinMode(27, GPIO.INPUT); // pin 13
+  GPIO.pinMode(22, GPIO.INPUT); // pin 15
+
 
   //start oscP5, listening for incoming messages at portIn
   osc = new OscP5(this, portIn);
@@ -91,21 +92,56 @@ void setup() {
 }
 
 void draw() {
-  getUserInput();
 
   OSC_sender();
 
   if (gameScreen == 0) {
     //println("init");
     s.init();
+    if (GPIO.digitalRead(23) == GPIO.HIGH) {
+      //BUTTON
+      gameScreen = 1;
+      delay(1000);
+    }
   } else if (gameScreen == 1) {
     //println("play");
     //start game
+    if (GPIO.digitalRead(23) == GPIO.HIGH) {
+      //BUTTON
+      _shoot = true;
+      if (_shoot == true) {
+        //println(shotFired, shotCounter);
+        if (shotFired == 0 && shotCounter > 0) {
+          shotFired = 1;
+          shots.add(new Shot(u.x, u.y));
+        }
+        //u.shoot();
+      }
+    }
+
+    if (GPIO.digitalRead(17) == GPIO.HIGH) {
+      //UP
+      u.y -= speed;
+    } else if (GPIO.digitalRead(18) == GPIO.HIGH) {
+      //down
+      u.y += speed;
+    } else if (GPIO.digitalRead(22) == GPIO.HIGH) {
+      //right
+      u.x += speed;
+    } else if (GPIO.digitalRead(27) == GPIO.HIGH) {
+      //left
+      u.x -= speed;
+    }
     s.play();
   } else if (gameScreen == 2) {
     //println("over");
     //show gameover screen
     s.gameOver();
+    if (GPIO.digitalRead(23) == GPIO.HIGH) {
+      //BUTTON
+      gameScreen = 3;
+      delay(1000);
+    }
   } else if (gameScreen == 3) {
     //println("reset");
     //reset game
@@ -114,6 +150,11 @@ void draw() {
     //println("reset");
     //reset game
     s.verfahren();
+    if (GPIO.digitalRead(23) == GPIO.HIGH) {
+      //BUTTON
+      gameScreen = 3;
+      delay(1000);
+    }
   }
 }
 
@@ -152,55 +193,4 @@ void init() {
   t = new Treasure();
 
   shotCounter = beginShots;
-}
-
-
-/****** CONTROLLER *****/
-public void getUserInput() {
-  iX = map(stick.getSlider("X").getValue(), -1, 1, -8, 8);
-  iY = map(stick.getSlider("Y").getValue(), -1, 1, -8, 8);
-  _shoot = stick.getButton("SHOOT").pressed();
-  _select = stick.getButton("SELECT").pressed();
-  //println("Joystickinput: ", iX, iY, _shoot);
-
-  switch(gameScreen) {
-  case 0: //init screen
-    if (_select == true) {
-      gameScreen = 1;
-      init();
-    }
-    break;
-
-  case 1: //game screen
-    if (_shoot == true) {
-      println(shotFired, shotCounter);
-
-      if (shotFired == 0 && shotCounter > 0) {
-        
-
-        shotFired = 1;
-        shots.add(new Shot(u.x, u.y));
-      }
-      //u.shoot();
-    }
-
-    break;
-
-  case 2: //game over screen
-    if (_select == true) {
-      gameScreen = 3;
-      delay(500);
-    }
-    break;
-
-  case 4: //verfahren screen
-    if (_select == true) {
-      gameScreen = 3;
-      delay(500);
-    }
-    break;
-  }
-
-  u.x += iX;
-  u.y += iY;
 }

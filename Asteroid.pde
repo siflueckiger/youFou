@@ -2,7 +2,7 @@ class Asteroid {
 
   float x = random(width);
   float y = random(-1000, -100);
-  float yspeed = random(0.5, 1.5);
+  float yspeed = random(1, 2);
 
   color asteroidColor = color(0, 255, 0);
   float aSize = random(5, 15);
@@ -13,7 +13,7 @@ class Asteroid {
     if (y > height + 40) {
       y = random(-200, -100);
       x = random(width);
-      yspeed = random(0.5, 2);
+      yspeed = random(1, 3);
       aSize = random(5, 40);
     }
   }
