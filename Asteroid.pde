@@ -9,6 +9,10 @@ class Asteroid {
 
   void fall() {
     y = y + yspeed;
+    
+    if(score > highscore && highscore > 0){
+     x += random(-1,1); 
+    }
 
     if (y > height + 40) {
       y = random(-200, -100);
