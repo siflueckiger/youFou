@@ -1,5 +1,5 @@
 //todo
-
+int iButtoni = 0;
 import net.java.games.input.*;
 //import org.gamecontrolplus.*;
 //import org.gamecontrolplus.gui.*;
@@ -9,22 +9,17 @@ import netP5.*;
 /****** CONTROLLER ******/
 import processing.io.*;
 
-
 /****** OSC ******/
 OscP5 osc;
 NetAddress oscIN;
 NetAddress[] oscOUT = new NetAddress[4]; //make oscOUT objects for all IPs
 
-
-/****** OBJECTS ******/
-UFO u;
-Screen s;
-Treasure t;
-
-
 /****** VARIABLES ******/
 color backgroundColor = color(0, 0, 0);
+int maxPlayer = 4;
+color[] playerColor = new color[maxPlayer]; 
 
+int playerCount = 1;
 int shoti;
 
 int ufoSize = 30;
@@ -33,14 +28,16 @@ int score, highscore;
 Asteroid[] asteroids = new Asteroid[100];
 
 //shot
-int ishot;
-float iX, iY;
-boolean _shoot, _select;
-int shotCounter, beginShots = 5;
-int shotFired;
-ArrayList<Shot> shots;
+int beginShots = 5;
+String[] highScoreFile;
 
-float speed;
+/****** OBJECTS ******/
+ArrayList<UFO> u;
+ArrayList<Treasure> t;
+
+Screen s;
+NewPlayer newPlayer;
+PlayerGPIO[] playerGPIO = new PlayerGPIO[maxPlayer];
 
 /****** OSC ******/
 String[] IPsOut = { "192.168.1.121", //visuals 1
@@ -63,21 +60,54 @@ void settings() {
 }
 
 
+/****** INIT *****/
+void init() {
+  //initialize objects
+  for (int i = 0; i < asteroids.length; i++) {
+    asteroids[i] = new Asteroid();
+  }
+
+  //shots = new ArrayList<Shot>();
+  //shots.add(new Shot(width/2, height/2));
+
+  s = new Screen();
+  u = new ArrayList<UFO>();
+  t = new ArrayList<Treasure>();
+
+  playerColor[0] = color(255, 0, 0);
+  playerColor[1] = color(0, 255, 0);
+  playerColor[2] = color(0, 255, 255);
+  playerColor[3] = color(0, 0, 255);
+
+  newPlayer = new NewPlayer(playerColor[playerCount+1]);
+
+  // up, down, left, right, button
+  playerGPIO[0] = new PlayerGPIO(27, 26, 26, 27, 16);
+  playerGPIO[1] = new PlayerGPIO(26, 27, 27, 26, 15);
+  playerGPIO[2] = new PlayerGPIO(26, 27, 27, 26, 15);
+  playerGPIO[3] = new PlayerGPIO(27, 26, 26, 27, 16);
+
+  // set GPIO to input
+  GPIO.pinMode(playerGPIO[0].up, GPIO.INPUT);     // UP
+  GPIO.pinMode(playerGPIO[0].button, GPIO.INPUT); // BUTTON
+  GPIO.pinMode(playerGPIO[1].up, GPIO.INPUT);     // UP
+  GPIO.pinMode(playerGPIO[1].button, GPIO.INPUT); // BUTTON
+
+  u.add(new UFO(playerColor[playerCount-1], playerGPIO[playerCount-1], int(width/2), int(random(height))));
+  t.add(new Treasure());
+}
+
+
 /****** SETUP ******/
 void setup() {
   background(0);
   noCursor();
+  frameRate(30);
+
   rectMode(CENTER);
 
-  speed = 6;
-
-  GPIO.pinMode(23, GPIO.INPUT); // pin 7 shoot
-
-  GPIO.pinMode(17, GPIO.INPUT); // pin 11
-  GPIO.pinMode(18, GPIO.INPUT); // pin 12
-  GPIO.pinMode(27, GPIO.INPUT); // pin 13
-  GPIO.pinMode(22, GPIO.INPUT); // pin 15
-
+  highScoreFile = loadStrings("highScore.txt");
+  highscore = int(highScoreFile[0]);
 
   //start oscP5, listening for incoming messages at portIn
   osc = new OscP5(this, portIn);
@@ -93,51 +123,28 @@ void setup() {
 
 void draw() {
 
-  OSC_sender();
+  u.get(0).x = mouseX;
+  u.get(0).y = mouseY;
+
+  //OSC_sender();
 
   if (gameScreen == 0) {
     //println("init");
     s.init();
-    if (GPIO.digitalRead(23) == GPIO.HIGH) {
+    if (GPIO.digitalRead(playerGPIO[3].button) == GPIO.HIGH || GPIO.digitalRead(playerGPIO[2].button) == GPIO.HIGH) {
       //BUTTON
       gameScreen = 1;
-      delay(1000);
+      delay(500);
     }
   } else if (gameScreen == 1) {
     //println("play");
     //start game
-    if (GPIO.digitalRead(23) == GPIO.HIGH) {
-      //BUTTON
-      _shoot = true;
-      if (_shoot == true) {
-        //println(shotFired, shotCounter);
-        if (shotFired == 0 && shotCounter > 0) {
-          shotFired = 1;
-          shots.add(new Shot(u.x, u.y));
-        }
-        //u.shoot();
-      }
-    }
-
-    if (GPIO.digitalRead(17) == GPIO.HIGH) {
-      //UP
-      u.y -= speed;
-    } else if (GPIO.digitalRead(18) == GPIO.HIGH) {
-      //down
-      u.y += speed;
-    } else if (GPIO.digitalRead(22) == GPIO.HIGH) {
-      //right
-      u.x += speed;
-    } else if (GPIO.digitalRead(27) == GPIO.HIGH) {
-      //left
-      u.x -= speed;
-    }
     s.play();
   } else if (gameScreen == 2) {
     //println("over");
     //show gameover screen
     s.gameOver();
-    if (GPIO.digitalRead(23) == GPIO.HIGH) {
+    if (GPIO.digitalRead(playerGPIO[3].button) == GPIO.HIGH || GPIO.digitalRead(playerGPIO[2].button) == GPIO.HIGH) {
       //BUTTON
       gameScreen = 3;
       delay(1000);
@@ -150,47 +157,30 @@ void draw() {
     //println("reset");
     //reset game
     s.verfahren();
-    if (GPIO.digitalRead(23) == GPIO.HIGH) {
+    if (GPIO.digitalRead(playerGPIO[3].button) == GPIO.HIGH || GPIO.digitalRead(playerGPIO[2].button) == GPIO.HIGH) {
       //BUTTON
       gameScreen = 3;
-      delay(1000);
+      delay(500);
     }
   }
 }
 
-
-/****** OSC Sender *****/
-void OSC_sender() {
-  //create message
-  OscMessage messageTransmit = new OscMessage("/YouFou");
-  messageTransmit.add(u.x/width);
-  messageTransmit.add(u.y/height);
-  messageTransmit.add(shotFired);
-  messageTransmit.add(gameScreen);
-  messageTransmit.add(score);
-
-
-  //send to all IPs
-  for (int i=0; i < IPsOut.length; i++) {
-    osc.send(messageTransmit, oscOUT[i]);
-    //println(IPsOut[i], portsOut[i]);
-  }
-  //println(messageTransmit);
-}
-
-/****** INIT *****/
-void init() {
-  //initialize objects
-  for (int i = 0; i < asteroids.length; i++) {
-    asteroids[i] = new Asteroid();
-  }
-
-  shots = new ArrayList<Shot>();
-  //shots.add(new Shot(width/2, height/2));
-
-  s = new Screen();
-  u = new UFO();
-  t = new Treasure();
-
-  shotCounter = beginShots;
-}
+/****** OSC Sender *****
+ void OSC_sender() {
+ //create message
+ OscMessage messageTransmit = new OscMessage("/YouFou");
+ messageTransmit.add(u.x/width);
+ messageTransmit.add(u.y/height);
+ messageTransmit.add(shotFired);
+ messageTransmit.add(gameScreen);
+ messageTransmit.add(score);
+ 
+ 
+ //send to all IPs
+ for (int i=0; i < IPsOut.length; i++) {
+ osc.send(messageTransmit, oscOUT[i]);
+ //println(IPsOut[i], portsOut[i]);
+ }
+ //println(messageTransmit);
+ }
+ */

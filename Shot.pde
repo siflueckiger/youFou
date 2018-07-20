@@ -3,36 +3,45 @@ class Shot {
   float speed;
   float accleration;
   int length_;
+  color shotColor;
+  int player;
 
-  Shot(float tempX, float tempY) {
-    x = tempX;
-    y = tempY;
+  int shotCounter; 
+  boolean shotFired;
+
+  Shot(color shotColor_) {
     speed = 3;
     accleration = 0.5;
     length_ = 20;
-    
-    shotCounter--;
+    shotColor = shotColor_;
+    shotCounter = beginShots;
   }
 
+  void shoot(float x_, float y_) {
+    x = x_;
+    y = y_;
+    shotCounter--;
+  }
 
   void move() {    
     speed += accleration;
     y -= speed;
   }
 
-  boolean finished() {
+  void finished() {
     if (y <= 0) {
-      shotFired = 0;
-      return true;
-    } else {
-      return false;
+      removeShot();
     }
   }
 
-  void display() {
-    stroke(0, 255, 0);
-    strokeWeight(5);
+  void removeShot() {
+    shotFired = false;
+    speed = 3;
+  }
 
+  void display() {
+    stroke(shotColor);
+    strokeWeight(5);
     line(x, y, x, y-length_);
   }
 }

@@ -28,35 +28,73 @@ class Screen {
     //background(bg);
     background(0);
 
-    t.show();
-
-    for (int i = 0; i < asteroids.length; i++) {
-      asteroids[i].fall();
-      asteroids[i].show();
-      asteroids[i].hit();
-      asteroids[i].shot();
+    //get GPIO input for all UFOs
+    for (int i = 0; i < u.size(); i++) {
+      u.get(i).getGPIOInput();
     }
 
-    for (int i = shots.size() - 1; i >= 0; i--) {
-      Shot shot = shots.get(i);
-      shot.move();
-      shot.display();
-      if (shot.finished()) {
-        shots.remove(i);
+    // treasures
+    for (int i = 0; i < t.size(); i++) {
+      t.get(i).show();
+      t.get(i).pick(i);
+    }
+
+    if (playerCount == 1) {
+      newPlayer.show();
+      newPlayer.activate();
+    } else if (playerCount >= 2 && playerCount < 4) {
+      newPlayer.show();
+      newPlayer.activate();
+    }
+
+
+
+    for (int i = 0; i < u.size(); i++) {
+      // Move Ufos && Check out of Area
+      u.get(i).show();
+      u.get(i).outOfArea();
+      
+      // Move Shot && check if shot leaves Areas
+      if (u.get(i).shot.shotFired) {
+        u.get(i).shot.move();
+        u.get(i).shot.display();
+        u.get(i).shot.finished();
       }
-    }
+      
+      // Check if Ufo is shot by other ufo
+      if (u.get(i).ufoShotUfo()) {
+        u.get(i).removeUfo = true;
+      }
 
-    u.show();
-    u.outOfArea();
-    t.pick();
+      // Draw Asteroids && Check if Ufo hits Asteroid && Check if asteroid was Shot
+      for (int j = 0; j < asteroids.length; j++) {
+        asteroids[j].fall();
+        asteroids[j].show();
+        asteroids[j].hit(i);
+        asteroids[j].shot();
+      }
+      
+      if (u.get(i).removeUfo){
+        u.remove(i);
+      }
+      
+    }
 
     textSize(30);
     fill(255);
-    text("score: " + score, width / 2, 40);
-    text("shots: " + shotCounter, width / 2, 80);
+    textAlign(LEFT);
+    if (u.size() != 0) {
+      text("score: " + score, 40, 80);
+    }
+    for (int i = 0; i < u.size(); i++) {
+      String text = "shots: " + u.get(i).shot.shotCounter;
+      fill(u.get(i).ufoColor);
+      text(text, 40 + (150 * i), 40);
+    }
   }
 
   void gameOver() {
+    textAlign(CENTER);
     textSize(60);
     fill(255);
     text("- GAME OVER -", width / 2, height / 3);
@@ -85,22 +123,29 @@ class Screen {
   }
 
   void reset() {
-    if(score > highscore){
+    playerCount = 1;
+
+    if (score > highscore) {
       highscore = score;
+      highScoreFile[0] = str(highscore);
+      println(highScoreFile[0]);
+      saveStrings("highScore.txt", highScoreFile);
     }
 
     s = new Screen();
-    u = new UFO();
+
+    u = new ArrayList<UFO>(maxPlayer);
+    for (int i = 0; i < maxPlayer; i++) {
+      u.add(new UFO(playerColor[playerCount-1], playerGPIO[playerCount-1], int(random(width)), int(random(height))));
+    }
+
     for (int i = 0; i < asteroids.length; i++) {
       asteroids[i] = new Asteroid();
     }
-    shots = new ArrayList<Shot>();
 
     background(0);
 
     score = 0;
     gameScreen = 0;
-    shotCounter = beginShots;
-    shotFired = 0;
   }
 }
