@@ -1,17 +1,17 @@
 class Asteroid {
 
-  float x = random(width);
-  float y = random(-1000, -100);
+  float xAsteroid = random(width);
+  float yAsteroid = random(-1000, -100);
   float yspeed = 0.5;
 
   color asteroidColor = color(0, 255, 0);
   float aSize = random(5, 15);
 
   void fall() {
-    y = y + yspeed;
-    if (y > height + 40) {
-      y = random(-200, -100);
-      x = random(width);
+    yAsteroid = yAsteroid + yspeed;
+    if (yAsteroid > height + 40) {
+      yAsteroid = random(-200, -100);
+      xAsteroid = random(width);
       yspeed = 0.5;
       aSize = random(5, 25);
     }
@@ -23,11 +23,11 @@ class Asteroid {
     //noFill();
     //strokeWeight(1);
     fill(asteroidColor);
-    rect(x, y, aSize, aSize);
+    rect(xAsteroid, yAsteroid, aSize, aSize);
   }
 
   void hit(int i) {
-    if (sqrt(pow(u.get(i).x - x, 2) + pow(u.get(i).y - y, 2)) < aSize/2 + ufoSize/2) {      
+    if (sqrt(pow(u.get(i).x - xAsteroid, 2) + pow(u.get(i).y - yAsteroid, 2)) < aSize/2 + ufoSize/2) {      
       u.get(i).removeUfo = true;
       if (u.size() == 0) { 
         gameScreen = 2;
@@ -37,13 +37,13 @@ class Asteroid {
 
   void shot() {
     for (int i = 0; i < u.size(); i++) {
-      float distShotTopAsteroidCenter = sqrt(pow(u.get(i).shot.x - x, 2) + pow(u.get(i).shot.y - u.get(i).shot.length_ - y, 2));
+      float distShotTopAsteroidCenter = sqrt(pow(u.get(i).shot.x - xAsteroid, 2) + pow(u.get(i).shot.y - u.get(i).shot.length_ - yAsteroid, 2));
       if (distShotTopAsteroidCenter < aSize/2) {
         u.get(i).shot.finished();
         u.get(i).shot.removeShot();
         
-        y = random(-200, -100);
-        x = random(width);
+        yAsteroid = random(-200, -100);
+        xAsteroid = random(width);
         yspeed = 0.5;
         aSize = random(5, 40);
         color(255);

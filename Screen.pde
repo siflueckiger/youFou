@@ -128,7 +128,6 @@ class Screen {
     if (score > highscore) {
       highscore = score;
       highScoreFile[0] = str(highscore);
-      println(highScoreFile[0]);
       saveStrings("highScore.txt", highScoreFile);
     }
 
